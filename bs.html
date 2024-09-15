@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Eco-Friendly Route Finder</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
+    <style>
+        #map {
+            height: 80%;
+            width: 100%;
+        }
+        #controls {
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div id="controls">
+        <input id="origin" type="text" placeholder="Enter starting point" size="30">
+        <input id="destination" type="text" placeholder="Enter destination" size="30">
+        <button onclick="findEcoFriendlyRoute()">Find Eco-Friendly Route</button>
+    </div>
+
+    <script>
+        let map;
+        let directionsService;
+        let directionsRenderer;
+        
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 7,
+                center: {lat: 41.85, lng: -87.65} // Centered on Chicago, IL
+            });
+
+            directionsService = new google.maps.DirectionsService();
+            directionsRenderer = new google.maps.DirectionsRenderer();
+            directionsRenderer.setMap(map);
+        }
+
+        function findEcoFriendlyRoute() {
+            const origin = document.getElementById('origin').value;
+            const destination = document.getElementById('destination').value;
+
+            const request = {
+                origin: origin,
+                destination: destination,
+                travelMode: 'DRIVING',
+                drivingOptions: {
+                    departureTime: new Date(),
+                    trafficModel: 'bestguess',
+                },
+                optimizeWaypoints: true
+            };
+
+            directionsService.route(request, function(result, status) {
+                if (status == 'OK') {
+                    directionsRenderer.setDirections(result);
+                } else {
+                    alert('Could not find a route: ' + status);
+                }
+            });
+        }
+    </script>
+
+    <script>
+        // Load the map once the page is loaded
+        window.onload = function() {
+            initMap();
+        };
+    </script>
+</body>
+</html>
